@@ -50,9 +50,13 @@ npm run build
 npm start
 ```
 
-## 📦 Cursor'a Kurulum
+## 📦 MCP Client'lara Kurulum
 
-### 1. MCP Config Dosyasını Oluştur/Düzenle
+Bu MCP server, MCP (Model Context Protocol) standardını destekleyen herhangi bir client ile kullanılabilir. Aşağıda popüler client'lar için kurulum rehberleri bulunmaktadır.
+
+### Cursor IDE
+
+#### 1. MCP Config Dosyasını Oluştur/Düzenle
 
 **Windows:**
 ```
@@ -64,7 +68,7 @@ npm start
 ~/.config/Cursor/User/globalStorage/mcp.json
 ```
 
-### 2. Config İçeriği
+#### 2. Config İçeriği
 
 ```json
 {
@@ -81,41 +85,241 @@ npm start
 
 **Not:** `args` içindeki path'i kendi proje yolunuza göre güncelleyin.
 
-### 3. Cursor'u Yeniden Başlatın
+#### 3. Cursor'u Yeniden Başlatın
 
 Config dosyasını kaydettikten sonra Cursor'u tamamen kapatıp yeniden açın.
 
-### 4. Doğrulama
+#### 4. Doğrulama
 
 Cursor'da **Settings > Tools & MCP** bölümünde "database-manager" listede görünmeli.
 
+### Claude Desktop
+
+#### 1. MCP Config Dosyasını Oluştur/Düzenle
+
+**Windows:**
+```
+%APPDATA%\Claude\claude_desktop_config.json
+```
+
+**macOS:**
+```
+~/Library/Application Support/Claude/claude_desktop_config.json
+```
+
+**Linux:**
+```
+~/.config/Claude/claude_desktop_config.json
+```
+
+#### 2. Config İçeriği
+
+```json
+{
+  "mcpServers": {
+    "database-manager": {
+      "command": "node",
+      "args": [
+        "/path/to/database-manager-mcp-Server/dist/index.js"
+      ]
+    }
+  }
+}
+```
+
+#### 3. Claude Desktop'u Yeniden Başlatın
+
+### Diğer MCP Client'lar
+
+Herhangi bir MCP client kullanıyorsanız, client'ın MCP server yapılandırma formatına göre aşağıdaki bilgileri kullanın:
+
+- **Command:** `node`
+- **Args:** `[path/to/dist/index.js]`
+- **Transport:** `stdio` (standard input/output)
+
+#### Örnek Config Formatları
+
+**Genel MCP Config:**
+```json
+{
+  "mcpServers": {
+    "database-manager": {
+      "command": "node",
+      "args": ["/absolute/path/to/dist/index.js"],
+      "env": {}
+    }
+  }
+}
+```
+
+**Environment Variables ile:**
+```json
+{
+  "mcpServers": {
+    "database-manager": {
+      "command": "node",
+      "args": ["/absolute/path/to/dist/index.js"],
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  }
+}
+```
+
+### Programatik Kullanım
+
+MCP server'ı doğrudan Node.js uygulamanızda da kullanabilirsiniz:
+
+```javascript
+import { DatabaseMCPServer } from './dist/server.js';
+
+const server = new DatabaseMCPServer();
+await server.run();
+```
+
+### Docker ile Kullanım
+
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+CMD ["node", "dist/index.js"]
+```
+
+### Standalone Server Olarak
+
+MCP server'ı standalone bir process olarak çalıştırabilirsiniz:
+
+```bash
+# Development
+npm run dev
+
+# Production
+npm run build
+npm start
+```
+
 ## 🛠️ Kullanım
 
-### Cursor Chat'te Örnek Komutlar
+### MCP Client'larda Kullanım
 
+MCP server kurulduktan sonra, client'ınızın chat arayüzünde doğal dil komutları kullanarak veritabanı işlemlerini gerçekleştirebilirsiniz.
+
+### Örnek Komutlar
+
+**Veritabanı Bağlantısı:**
 ```
 SQLite veritabanına bağlan: sqlite://test.db
 ```
 
 ```
+PostgreSQL veritabanına bağlan: postgresql://user:password@localhost:5432/dbname
+```
+
+```
+MySQL veritabanına bağlan: mysql://user:password@localhost:3306/dbname
+```
+
+**Bağlantı Yönetimi:**
+```
 Bağlı veritabanların listesini göster
 ```
 
+```
+test_connection_id bağlantısını kapat
+```
+
+**Şema İşlemleri:**
 ```
 Şemayı göster
 ```
 
 ```
+users tablosunun şemasını detaylı göster
+```
+
+```
+Veritabanı şemasını ER diagram olarak görselleştir
+```
+
+**Veri Analizi:**
+```
 users tablosunun istatistiklerini getir
 ```
 
 ```
-SELECT * FROM users WHERE age > 25 sorgusunu analiz et
+users tablosundan 10 satır örnekle
 ```
 
 ```
 users tablosunda duplicate kayıtları bul
 ```
+
+```
+users tablosunun veri kalitesi analizini yap
+```
+
+**Query Analizi:**
+```
+SELECT * FROM users WHERE age > 25 sorgusunu analiz et
+```
+
+```
+SELECT * FROM orders JOIN users ON orders.user_id = users.id sorgusunun execution plan'ını göster
+```
+
+```
+SELECT * FROM products WHERE name LIKE '%laptop%' sorgusunu optimize et
+```
+
+**Güvenlik:**
+```
+Veritabanındaki güvenlik açıklarını tespit et
+```
+
+```
+users tablosunda hassas veri (PII) olup olmadığını kontrol et
+```
+
+### API Kullanımı (Programatik)
+
+MCP server'ı programatik olarak da kullanabilirsiniz:
+
+```typescript
+import { connectionManager } from './dist/utils/connection-manager.js';
+import { QueryAnalyzer } from './dist/analyzers/query-analyzer.js';
+
+// Veritabanına bağlan
+const connectionId = await connectionManager.createConnection({
+  type: 'postgresql',
+  host: 'localhost',
+  port: 5432,
+  database: 'mydb',
+  username: 'user',
+  password: 'pass'
+});
+
+// Adapter al
+const adapter = connectionManager.getConnection(connectionId);
+
+// Query analiz et
+const analyzer = new QueryAnalyzer(adapter);
+const result = await analyzer.analyzeQuery('SELECT * FROM users');
+```
+
+### CLI Kullanımı
+
+MCP server'ı doğrudan çalıştırarak stdio üzerinden MCP protokolü ile iletişim kurabilirsiniz:
+
+```bash
+node dist/index.js
+```
+
+Bu komut server'ı stdio transport üzerinden başlatır ve MCP client'ları ile iletişime hazır hale getirir.
 
 ## 📋 MCP Tools (27 Araç)
 
@@ -232,30 +436,75 @@ npm test
 
 ### Senaryo 1: SQLite Veritabanı Analizi
 
-```javascript
-// Cursor chat'te:
-"SQLite veritabanına bağlan: sqlite://mydb.db"
-"Şemayı göster"
-"users tablosunun istatistiklerini getir"
-"users tablosunda duplicate kayıtları bul"
+**MCP Client Chat'te:**
 ```
+SQLite veritabanına bağlan: sqlite://mydb.db
+Şemayı göster
+users tablosunun istatistiklerini getir
+users tablosunda duplicate kayıtları bul
+```
+
+**Beklenen Sonuç:**
+- Veritabanı bağlantısı kurulur
+- Tüm tablolar ve ilişkiler gösterilir
+- İstatistiksel analiz yapılır
+- Duplicate kayıtlar tespit edilir
 
 ### Senaryo 2: PostgreSQL Query Optimizasyonu
 
-```javascript
-// Cursor chat'te:
-"PostgreSQL veritabanına bağlan: postgresql://user:pass@localhost:5432/dbname"
-"SELECT * FROM orders WHERE customer_id = 123 sorgusunu analiz et"
-"Bu sorgu için index önerileri yap"
+**MCP Client Chat'te:**
 ```
+PostgreSQL veritabanına bağlan: postgresql://user:pass@localhost:5432/dbname
+SELECT * FROM orders WHERE customer_id = 123 sorgusunu analiz et
+Bu sorgu için index önerileri yap
+```
+
+**Beklenen Sonuç:**
+- Query performance analizi
+- Execution plan görselleştirmesi
+- Index önerileri
+- Optimizasyon tavsiyeleri
 
 ### Senaryo 3: Schema Migration
 
-```javascript
-// Cursor chat'te:
-"İki şema arasındaki farkları bul ve migration script oluştur"
-"Schema'yı ER diagram olarak görselleştir"
+**MCP Client Chat'te:**
 ```
+İki şema arasındaki farkları bul ve migration script oluştur
+Schema'yı ER diagram olarak görselleştir
+```
+
+**Beklenen Sonuç:**
+- Schema karşılaştırması
+- Migration script oluşturma
+- Mermaid formatında ER diagram
+
+### Senaryo 4: Veri Kalitesi Kontrolü
+
+**MCP Client Chat'te:**
+```
+products tablosunun veri kalitesi analizini yap
+products tablosunda hassas veri olup olmadığını kontrol et
+```
+
+**Beklenen Sonuç:**
+- Veri kalitesi skoru
+- Eksik/duplicate/inconsistent veri tespiti
+- PII ve sensitive data tespiti
+- Öneriler ve raporlar
+
+### Senaryo 5: Backup ve Restore
+
+**MCP Client Chat'te:**
+```
+Veritabanının backup'ını oluştur
+Backup'ları listele
+Backup'ın doğruluğunu kontrol et
+```
+
+**Beklenen Sonuç:**
+- Backup oluşturma
+- Backup listesi
+- Backup doğrulama
 
 ## 🔐 Güvenlik
 
@@ -285,10 +534,20 @@ npm test
 
 MIT License - Detaylar için [LICENSE](LICENSE) dosyasına bakın.
 
+## 🔗 MCP Client Desteği
+
+Bu MCP server aşağıdaki client'lar ile uyumludur:
+
+- ✅ **Cursor IDE** - Tam destek
+- ✅ **Claude Desktop** - Tam destek
+- ✅ **Anthropic API** - MCP protokolü üzerinden
+- ✅ **Diğer MCP Client'lar** - Standart MCP protokolü destekleyen tüm client'lar
+
 ## 🙏 Teşekkürler
 
 - [Model Context Protocol](https://modelcontextprotocol.io/) - MCP standardı için
 - [Cursor](https://cursor.sh/) - MCP desteği için
+- [Claude](https://claude.ai/) - MCP desteği için
 
 ## 📞 İletişim
 
