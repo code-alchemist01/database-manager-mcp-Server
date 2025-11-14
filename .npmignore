@@ -1,0 +1,58 @@
+# Source files
+src/
+*.ts
+!*.d.ts
+tsconfig.json
+
+# Test files
+test/
+*.test.ts
+*.test.js
+*.spec.ts
+*.spec.js
+
+# Development files
+.git/
+.gitignore
+.cursor/
+.vscode/
+.idea/
+
+# Documentation (keep README.md)
+PROJE_PLANI.md
+*.md
+!README.md
+
+# Build artifacts
+*.tsbuildinfo
+*.map
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+*.sql
+
+# Backup files
+*.backup
+*.bak
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+

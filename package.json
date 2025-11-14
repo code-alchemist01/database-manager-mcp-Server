@@ -1,26 +1,50 @@
 {
   "name": "mcp-database-manager",
   "version": "1.0.0",
-  "description": "Comprehensive MCP server for database management and analysis",
+  "description": "Comprehensive MCP server for database management and analysis. Supports PostgreSQL, MySQL, SQLite, SQL Server, MongoDB, and Redis.",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "type": "module",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
-    "test": "jest"
+    "test": "jest",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "mcp",
+    "model-context-protocol",
     "database",
     "management",
     "analysis",
     "postgresql",
     "mysql",
-    "mongodb"
+    "sqlite",
+    "mssql",
+    "mongodb",
+    "redis",
+    "query-analysis",
+    "schema-management",
+    "data-analysis",
+    "backup-restore",
+    "security"
   ],
-  "author": "",
+  "author": "code-alchemist01",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/code-alchemist01/database-manager-mcp-Server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/code-alchemist01/database-manager-mcp-Server/issues"
+  },
+  "homepage": "https://github.com/code-alchemist01/database-manager-mcp-Server#readme",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
     "better-sqlite3": "^9.2.2",
