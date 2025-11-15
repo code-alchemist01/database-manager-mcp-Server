@@ -3,6 +3,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
 [![MCP](https://img.shields.io/badge/MCP-1.0-orange.svg)](https://modelcontextprotocol.io/)
+[![Verified on MseeP](https://mseep.ai/badge.svg)](https://mseep.ai/app/5445a3f9-87c7-4c55-b67f-fa071504bf86)
 
 Comprehensive MCP (Model Context Protocol) server for database management and analysis. Supports multiple database types including PostgreSQL, MySQL, SQLite, SQL Server, MongoDB, and Redis.
 
